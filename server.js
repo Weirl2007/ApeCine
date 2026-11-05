@@ -4,13 +4,11 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 
 const app = express();
-const cors = require('cors');
 app.use(cors({
     origin: ['https://apecine.onrender.com', 'http://localhost:3000'],
     credentials: true
 }));
 app.use(express.json());
-app.use(cors());
 
 // Cấu hình kết nối SQL Server của bạn
 const dbConfig = {
