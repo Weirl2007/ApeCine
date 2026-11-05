@@ -211,7 +211,7 @@
       const movieId = urlParams.get('id') || 'dune2';
 
       try {
-        const resMovie = await fetch(`https://sweet-rivers-drive.loca.lt/api/movies/${movieId}`);
+        const resMovie = await fetch(`https://henchman-obscurity-blandness.ngrok-free.dev/api/movies/${movieId}`);
         if (!resMovie.ok) throw new Error('Không tìm thấy phim');
         const movie = await resMovie.json();
 
@@ -220,7 +220,7 @@
         document.getElementById('movie-age').className = `text-[10px] font-extrabold px-2 py-0.5 ${getAgeRatingBadgeColor(movie.AgeRating)} text-white rounded w-fit`;
         document.getElementById('poster-img').src = movie.PosterUrl;
 
-        const resShowtimes = await fetch(`https://sweet-rivers-drive.loca.lt/api/showtimes/${movieId}`);
+        const resShowtimes = await fetch(`https://henchman-obscurity-blandness.ngrok-free.dev/api/showtimes/${movieId}`);
         allShowtimes = await resShowtimes.json();
 
         const currentCity = localStorage.getItem('apecine_city') || 'Đà Nẵng';
@@ -264,7 +264,7 @@
 
     async function fetchBookedSeats(showtimeId, totalRows, seatsPerRow) {
       try {
-        const res = await fetch(`https://sweet-rivers-drive.loca.lt/api/booked-seats/${showtimeId}`);
+        const res = await fetch(`https://henchman-obscurity-blandness.ngrok-free.dev/api/booked-seats/${showtimeId}`);
         bookedSeatsList = await res.json();
         renderSeatGrid(totalRows, seatsPerRow);
       } catch (err) {
