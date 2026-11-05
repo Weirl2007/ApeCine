@@ -4,21 +4,22 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 
 const app = express();
+
+const allowedOrigins = ['https://apecine.onrender.com', 'http://localhost:3000'];
 app.use(cors({
-    origin: ['https://apecine.onrender.com', 'http://localhost:3000'],
+    origin: function (origin, callback) {
+        // Cho phép các request không có origin (như Postman hoặc mobile apps) hoặc nằm trong danh sách cho phép
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'ngrok-skip-browser-warning']
 }));
+
 app.use(express.json());
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://apecine.onrender.com');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, ngrok-skip-browser-warning');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    if (req.method === 'OPTIONS') {
-        return res.sendStatus(200);
-    }
-    next();
-});
 
 // Cấu hình kết nối SQL Server của bạn
 const dbConfig = {

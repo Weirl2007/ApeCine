@@ -163,8 +163,14 @@
       selectedMovieId = urlParams.get('id') || 'dune2';
 
       try {
-        // 1. Tải thông tin phim
-        const resMovie = await fetch(`https://henchman-obscurity-blandness.ngrok-free.dev/api/movies/${selectedMovieId}`);
+        // 1. Tải thông tin phim (Đã tích hợp ngrok-skip-browser-warning)[cite: 16]
+        const resMovie = await fetch(`https://henchman-obscurity-blandness.ngrok-free.dev/api/movies/${selectedMovieId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true'
+          }
+        });
         if (!resMovie.ok) throw new Error('Không tìm thấy phim');
         const movie = await resMovie.json();
 
@@ -185,8 +191,14 @@
         currentTrailerUrl = movie.TrailerUrl || '';
         document.getElementById('btn-booking-now').href = `Booking.html?id=${movie.MovieId}`;
 
-        // 2. Tải danh sách suất chiếu từ CSDL
-        const resShowtimes = await fetch(`https://henchman-obscurity-blandness.ngrok-free.dev/api/showtimes/${selectedMovieId}`);
+        // 2. Tải danh sách suất chiếu từ CSDL (Đã tích hợp ngrok-skip-browser-warning)[cite: 16]
+        const resShowtimes = await fetch(`https://henchman-obscurity-blandness.ngrok-free.dev/api/showtimes/${selectedMovieId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true'
+          }
+        });
         allMovieShowtimes = await resShowtimes.json();
 
         // Render lịch chiếu theo khu vực hiện tại trên Navbar

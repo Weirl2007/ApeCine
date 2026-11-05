@@ -184,12 +184,18 @@
       }
     }
 
-    // 3. Tải danh sách vé từ Database qua Backend API
+    // 3. Tải danh sách vé từ Database qua Backend API (Tích hợp header ngrok-skip-browser-warning)
     async function fetchBookingHistory(userId) {
       const container = document.getElementById('booking-history-list');
 
       try {
-        const response = await fetch(`https://henchman-obscurity-blandness.ngrok-free.dev/api/user-bookings/${userId || 0}`);
+        const response = await fetch(`https://henchman-obscurity-blandness.ngrok-free.dev/api/user-bookings/${userId || 0}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true'
+          }
+        });
         const bookings = await response.json();
 
         if (!bookings || bookings.length === 0) {
@@ -234,7 +240,7 @@
       }
     }
 
-    // 4. Cập nhật thông tin cá nhân
+    // 4. Cập nhật thông tin cá nhân (Tích hợp header ngrok-skip-browser-warning)
     async function handleUpdateProfile(e) {
       e.preventDefault();
       const fullName = document.getElementById('input-fullname').value.trim();
@@ -250,7 +256,10 @@
       try {
         const response = await fetch('https://henchman-obscurity-blandness.ngrok-free.dev/api/update-profile', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true'
+          },
           body: JSON.stringify({
             userId: currentUser.UserId,
             fullName,
@@ -283,6 +292,11 @@
         console.error('Lỗi khi cập nhật hồ sơ:', err);
         alert('Không thể kết nối đến Server CSDL!');
       }
+    }
+
+    function simulateLogout() {
+      localStorage.removeItem('apecine_user');
+      window.location.href = 'Homepage.html';
     }
   </script>
 </body>
