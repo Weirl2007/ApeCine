@@ -164,7 +164,7 @@
 
       try {
         // 1. Tải thông tin phim
-        const resMovie = await fetch(`https://shaggy-papayas-dig.loca.lt/api/movies/${selectedMovieId}`);
+        const resMovie = await fetch(`https://sweet-rivers-drive.loca.lt/api/movies/${selectedMovieId}`);
         if (!resMovie.ok) throw new Error('Không tìm thấy phim');
         const movie = await resMovie.json();
 
@@ -186,7 +186,7 @@
         document.getElementById('btn-booking-now').href = `Booking.html?id=${movie.MovieId}`;
 
         // 2. Tải danh sách suất chiếu từ CSDL
-        const resShowtimes = await fetch(`https://shaggy-papayas-dig.loca.lt/api/showtimes/${selectedMovieId}`);
+        const resShowtimes = await fetch(`https://sweet-rivers-drive.loca.lt/api/showtimes/${selectedMovieId}`);
         allMovieShowtimes = await resShowtimes.json();
 
         // Render lịch chiếu theo khu vực hiện tại trên Navbar
