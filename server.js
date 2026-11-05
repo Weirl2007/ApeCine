@@ -6,9 +6,19 @@ const bcrypt = require('bcryptjs');
 const app = express();
 app.use(cors({
     origin: ['https://apecine.onrender.com', 'http://localhost:3000'],
-    credentials: true
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'ngrok-skip-browser-warning']
 }));
 app.use(express.json());
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'https://apecine.onrender.com');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, ngrok-skip-browser-warning');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
 
 // Cấu hình kết nối SQL Server của bạn
 const dbConfig = {
