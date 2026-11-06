@@ -169,8 +169,8 @@
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
 
-    const TODAY_DATE_STR = `${year}-${month}-${day}`; // Ví dụ: "2026-11-06"
-    const CURRENT_TIME_STR = `${hours}:${minutes}[cite: 7]`;   // Ví dụ: "11:03"
+    const TODAY_DATE_STR = `${year}-${month}-${day}`; 
+    const CURRENT_TIME_STR = `${hours}:${minutes}`;  
 
     // Lọc suất chiếu theo khu vực, ngày và giờ thực tế
     function renderShowtimesByLocation(cityName) {
@@ -189,7 +189,7 @@
 
         // 2. Ngày hôm nay: Chỉ lấy các suất chiếu chưa qua giờ (StartTime >= giờ hiện tại)
         if (showDateFormatted === TODAY_DATE_STR && matchCity) {
-          return st.StartTime >= CURRENT_TIME_STR;[cite: 7]
+          return st.StartTime >= CURRENT_TIME_STR;
         }
 
         return false;
@@ -225,7 +225,6 @@
       }
     }
 
-    // Tải thông tin phim và lịch chiếu từ Database (Đã tích hợp ngrok-skip-browser-warning)[cite: 7]
     async function loadBookingDataFromDB() {
       const urlParams = new URLSearchParams(window.location.search);
       const movieId = urlParams.get('id') || 'dune2';
@@ -294,7 +293,6 @@
       await fetchBookedSeats(st.ShowtimeId, st.TotalRows, st.SeatsPerRow);
     }
 
-    // Tải danh sách ghế đã bán (Đã tích hợp ngrok-skip-browser-warning)[cite: 7]
     async function fetchBookedSeats(showtimeId, totalRows, seatsPerRow) {
       try {
         const res = await fetch(`https://henchman-obscurity-blandness.ngrok-free.dev/api/booked-seats/${showtimeId}`, {
