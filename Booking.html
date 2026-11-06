@@ -160,13 +160,19 @@
     
     let bookedSeatsList = []; 
     let allShowtimes = []; 
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    const TODAY_DATE_STR = `${year}-${month}-${day}`; 
 
-    // Lọc suất chiếu khi người dùng đổi khu vực trên Navbar dùng chung
+    // Tự động lấy Ngày và Giờ hiện tại theo thời gian thực (Realtime)
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+
+    const TODAY_DATE_STR = `${year}-${month}-${day}`; // Ví dụ: "2026-11-06"
+    const CURRENT_TIME_STR = `${hours}:${minutes}[cite: 7]`;   // Ví dụ: "11:03"
+
+    // Lọc suất chiếu theo khu vực, ngày và giờ thực tế
     function renderShowtimesByLocation(cityName) {
       const container = document.getElementById('showtimes-container');
       if (!container) return;
@@ -174,9 +180,19 @@
 
       const validShowtimes = allShowtimes.filter(st => {
         const showDateFormatted = st.ShowDate ? st.ShowDate.split('T')[0] : '';
-        const matchDate = showDateFormatted >= TODAY_DATE_STR;
         const matchCity = st.City ? st.City.includes(cityName) : true;
-        return matchDate && matchCity; 
+
+        // 1. Ngày trong tương lai (từ ngày mai trở đi): Hiển thị tất cả
+        if (showDateFormatted > TODAY_DATE_STR && matchCity) {
+          return true;
+        }
+
+        // 2. Ngày hôm nay: Chỉ lấy các suất chiếu chưa qua giờ (StartTime >= giờ hiện tại)
+        if (showDateFormatted === TODAY_DATE_STR && matchCity) {
+          return st.StartTime >= CURRENT_TIME_STR;[cite: 7]
+        }
+
+        return false;
       });
 
       if (validShowtimes.length > 0) {
@@ -185,7 +201,7 @@
           const isFirst = (index === 0);
           
           const dateParts = st.ShowDate.split('T')[0].split('-');
-          const displayDate = `${dateParts[2] || '04'}/${dateParts[1] || '11'}/${dateParts[0] || '2026'}`;
+          const displayDate = `${dateParts[2] || '06'}/${dateParts[1] || '11'}/${dateParts[0] || '2026'}`;
 
           btn.className = `time-btn px-4 py-2.5 rounded-xl border text-xs font-bold transition-all text-center ${
             isFirst ? 'bg-[#e50914]/20 border-[#e50914] text-white' : 'bg-[#1f2430] border-white/10 text-gray-300 hover:border-white'
@@ -201,7 +217,7 @@
           }
         });
       } else {
-        container.innerHTML = `<span class="text-xs text-red-400">Hiện tại khu vực ${cityName} không có suất chiếu nào từ ngày hôm nay trở đi.</span>`;
+        container.innerHTML = `<span class="text-xs text-red-400">Hiện tại khu vực ${cityName} không còn suất chiếu khả dụng nào tính từ thời điểm hiện tại.</span>`;
         document.getElementById('summary-time').innerText = 'Chưa chọn';
         document.getElementById('summary-seats').innerText = 'Chưa chọn';
         document.getElementById('summary-total').innerText = '0 đ';
@@ -209,7 +225,7 @@
       }
     }
 
-    // Tải thông tin phim và lịch chiếu từ Database (Đã tích hợp ngrok-skip-browser-warning)
+    // Tải thông tin phim và lịch chiếu từ Database (Đã tích hợp ngrok-skip-browser-warning)[cite: 7]
     async function loadBookingDataFromDB() {
       const urlParams = new URLSearchParams(window.location.search);
       const movieId = urlParams.get('id') || 'dune2';
@@ -278,7 +294,7 @@
       await fetchBookedSeats(st.ShowtimeId, st.TotalRows, st.SeatsPerRow);
     }
 
-    // Tải danh sách ghế đã bán (Đã tích hợp ngrok-skip-browser-warning)
+    // Tải danh sách ghế đã bán (Đã tích hợp ngrok-skip-browser-warning)[cite: 7]
     async function fetchBookedSeats(showtimeId, totalRows, seatsPerRow) {
       try {
         const res = await fetch(`https://henchman-obscurity-blandness.ngrok-free.dev/api/booked-seats/${showtimeId}`, {
@@ -377,7 +393,6 @@
         if (isCouple) {
           btn.className = 'w-[72px] h-8 rounded-lg text-[10px] font-bold border transition-all bg-[#f397e1]/20 border-pink-400 text-[#f397e1] hover:bg-[#f397e1]/40';
         } else {
-          // Trả về class gốc tùy theo VIP hay Thường
           const isVIP = btn.getAttribute('data-is-vip') === 'true';
           btn.className = isVIP 
             ? 'w-8 h-8 rounded-lg text-[10px] font-bold border transition-all bg-amber-500/10 border-amber-500/40 text-amber-400 hover:border-amber-400'
@@ -405,7 +420,7 @@
       document.getElementById('summary-total').innerText = total.toLocaleString('vi-VN') + ' đ';
     }
 
-    // Chuyển sang trang thanh toán payment.html
+    // Chuyển sang trang thanh toán Payment.html
     function checkout() {
       if (currentBooking.selectedSeats.length === 0) {
         alert('Vui lòng chọn ít nhất một ghế trước khi thanh toán!');
